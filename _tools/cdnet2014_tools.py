@@ -1,13 +1,36 @@
 import os, sys
 
 def getall_data_train(datasetpath:str):
-    raise ValueError("!")
+    path_tri = os.path.join(datasetpath, "dataset")
     data, metadata = [], []
+    for cdname in os.listdir(path_tri):
+        path_cdname = os.path.join(path_tri, cdname)
+        for videoname in os.listdir(path_cdname):
+            with open(os.path.join(path_cdname, videoname, 'temporalROI.txt'), 'r') as f:
+                idx_begin, idx_end = f.readline().split(" ")
+                for idx in range(1, int(idx_end)+1):
+                    data.append(os.path.join(path_cdname, videoname, "input", 'in'+str(idx).zfill(6)+'.jpg'))
+                    metadata.append(
+                        {
+                        'videoname':cdname + "_" + videoname,
+                        'maskpath':os.path.join(path_cdname, videoname, "ROI.bmp"),
+                        'idx_begin':int(idx_begin),
+                        'idx_end':int(idx_end)
+                        }
+                    )
     return data, metadata
 
 def getall_label_train(datasetpath:str):
-    raise ValueError("!")
+    path_tri = os.path.join(datasetpath, "dataset")
     data, metadata = [], []
+    for cdname in os.listdir(path_tri):
+        path_cdname = os.path.join(path_tri, cdname)
+        for videoname in os.listdir(path_cdname):
+            with open(os.path.join(path_cdname, videoname, 'temporalROI.txt'), 'r') as f:
+                idx_begin, idx_end = f.readline().split(" ")
+                for idx in range(1, int(idx_end)+1):
+                    data.append(os.path.join(path_cdname, videoname, "groundtruth", 'gt'+str(idx).zfill(6)+'.png'))
+                    metadata.append(None)
     return data, metadata
 
 def getall_data_valid(datasetpath:str):
@@ -32,7 +55,7 @@ def getall_label_test(datasetpath:str):
 
 if __name__ == "__main__":
     from _mypath import Path
-    mypath = Path.db_root_dir('chairsd')
+    mypath = Path.db_root_dir('cdnet2014')
     
     try:
         train_data, train_metadata = getall_data_train(mypath)

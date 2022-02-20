@@ -1,13 +1,26 @@
 import os, sys
 
 def getall_data_train(datasetpath:str):
-    raise ValueError("!")
+    path_tri = os.path.join(datasetpath, "data")
     data, metadata = [], []
+    for idx in range(1, len(os.listdir(path_tri)) // 3 + 1 ):
+        data.append(
+                        (
+                            os.path.join(path_tri, str(idx).zfill(5)+'_img1.ppm'), 
+                            os.path.join(path_tri, str(idx).zfill(5)+'_img2.ppm')
+                        )
+                    )
+        metadata = None
     return data, metadata
 
 def getall_label_train(datasetpath:str):
-    raise ValueError("!")
+    path_tri = os.path.join(datasetpath, "data")
     data, metadata = [], []
+    for idx in range(1, len(os.listdir(path_tri)) // 3 + 1 ):
+        data.append(
+                        os.path.join(path_tri, str(idx).zfill(5)+'_flow.flo'),
+                    )
+        metadata = None
     return data, metadata
 
 def getall_data_valid(datasetpath:str):
@@ -32,7 +45,7 @@ def getall_label_test(datasetpath:str):
 
 if __name__ == "__main__":
     from _mypath import Path
-    mypath = Path.db_root_dir('chairsd')
+    mypath = Path.db_root_dir('flyingchairs')
     
     try:
         train_data, train_metadata = getall_data_train(mypath)

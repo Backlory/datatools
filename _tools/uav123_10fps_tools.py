@@ -1,8 +1,13 @@
 import os, sys
 
 def getall_data_train(datasetpath:str):
-    raise ValueError("!")
-    data, metadata = [], []
+    data, label, metadata = [], [], []
+    path_tri = os.path.join(datasetpath, "data_seq",'UAV123_10fps')
+    for videoname in os.listdir(path_tri):
+        path_video =  os.path.join(path_tri, videoname)
+        for idx in range(1,1+len(os.listdir(path_video))):
+            data.append(os.path.join(path_video, str(idx).zfill(6)+'.jpg'))
+            metadata.append(videoname)
     return data, metadata
 
 def getall_label_train(datasetpath:str):
@@ -32,12 +37,12 @@ def getall_label_test(datasetpath:str):
 
 if __name__ == "__main__":
     from _mypath import Path
-    mypath = Path.db_root_dir('chairsd')
+    mypath = Path.db_root_dir('uav123_10fps')
     
     try:
         train_data, train_metadata = getall_data_train(mypath)
-        train_label, train_metalabel = getall_label_train(mypath)
         print('len=', len(train_data),', ', train_data[0])
+        train_label, train_metalabel = getall_label_train(mypath)
         print('len=', len(train_label),', ', train_label[0])
     except ValueError:
         pass

@@ -1,13 +1,23 @@
 import os, sys
 
 def getall_data_train(datasetpath:str):
-    raise ValueError("!")
+    path_tri = os.path.join(datasetpath, "DAVIS-2017-trainval-480p",'JPEGImages', '480p')
     data, metadata = [], []
+    for videoname in os.listdir(path_tri):
+        path_video =  os.path.join(path_tri, videoname)
+        for idx in range(len(os.listdir(path_video))):
+            data.append(os.path.join(path_video, str(idx).zfill(5) + '.jpg'))
+            metadata.append(videoname)
     return data, metadata
 
 def getall_label_train(datasetpath:str):
-    raise ValueError("!")
+    path_tri = os.path.join(datasetpath, "DAVIS-2017-trainval-480p",'Annotations', '480p')
     data, metadata = [], []
+    for videoname in os.listdir(path_tri):
+        path_video =  os.path.join(path_tri, videoname)
+        for idx in range(len(os.listdir(path_video))):
+            data.append(os.path.join(path_video, str(idx).zfill(5) + '.png'))
+            metadata.append(videoname)
     return data, metadata
 
 def getall_data_valid(datasetpath:str):
@@ -32,7 +42,7 @@ def getall_label_test(datasetpath:str):
 
 if __name__ == "__main__":
     from _mypath import Path
-    mypath = Path.db_root_dir('chairsd')
+    mypath = Path.db_root_dir('davis2017')
     
     try:
         train_data, train_metadata = getall_data_train(mypath)

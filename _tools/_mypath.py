@@ -50,7 +50,7 @@ class Path(object):
         # ==========================================================
         else:
             print('Dataset {} not available.'.format(dataset))
-            raise NotImplementedError
+            raise NotImplementedError('Dataset {} not available.'.format(dataset))
 
 
 if __name__ == "__main__":

@@ -3,26 +3,24 @@ import os, sys
 def getall_data_train(datasetpath:str):
     path_tri = os.path.join(datasetpath, "ChairsSDHom",'data', 'train','t0')
     data, metadata = [], []
-    for imgname in range(len(os.listdir(path_tri))):
+    for idx in range(len(os.listdir(path_tri))):
         data.append(
                         (
-                            os.path.join(path_tri, str(imgname).zfill(5)+'.png'), 
-                            os.path.join(path_tri, str(imgname).zfill(5)+'.png').replace('t0','t1')
+                            os.path.join(path_tri, str(idx).zfill(5)+'.png'), 
+                            os.path.join(path_tri, str(idx).zfill(5)+'.png').replace('t0','t1')
                         )
                     )
         metadata = None
-    sorted(data)
     return data, metadata
 
 def getall_label_train(datasetpath:str):
     path_tri = os.path.join(datasetpath, "ChairsSDHom",'data', 'train','flow')
     data, metadata = [], []
-    for imgname in range(len(os.listdir(path_tri))):
+    for idx in range(len(os.listdir(path_tri))):
         data.append(
-                        os.path.join(path_tri, str(imgname).zfill(5)+'.pfm'), 
+                        os.path.join(path_tri, str(idx).zfill(5)+'.pfm'), 
                     )
         metadata = None
-    sorted(data)
     return data, metadata
 
 def getall_data_valid(datasetpath:str):

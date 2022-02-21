@@ -17,7 +17,7 @@ class Path(object):
         # fg_det
         elif dataset == 'au_air': 
             return os.path.join(mypath, path_fg_det, 'au_air')
-        elif dataset == 'cdnet2014':
+        elif dataset in ['cdnet2014' ,'cdnet14' ] :
             return os.path.join(mypath, path_fg_det, 'CDnet2014')
         elif dataset == 'davis2017':
             return os.path.join(mypath, path_fg_det, 'DAVIS2017')

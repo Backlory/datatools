@@ -1,24 +1,50 @@
 import os
-from data.dataset.datatools._base_dataset_generater import _Dataset_Generater_Base
+from _base_dataset_generater import _Dataset_Generater_Base
+from _tools import flyingchairs_tools as tools
+
+import cv2
+from _Chairsio import readFlow
 
 class Dataset_FlyingChairs(_Dataset_Generater_Base):
-    def __init__(self, dataset_path='data/FlyingChaire_release/data',args=None) -> None:
+    def __init__(self, dataset_path='',args={}) -> None:
         print('initializating Dataset_FlyingChairs...')
         super().__init__(dataset_path, args)
         #
     
-    def get_alldata_from_dataset_path(self, dataset_path):
-        path_tri, path_val, path_test = dataset_path
+    def get_alldata_from_dataset_path(self):
+        
+        data, data_piece = tools.getall_data_train(self.dataset_path)
+        label, _ = tools.getall_label_train(self.dataset_path)
+        data_all = list(zip(data, data_piece, label ))
         #
-        temp = [str(1+i).zfill(5) for i in range(22872)]
-        temp1 = int(len(temp) * 0.7)
-        temp2 = int(len(temp) * 0.9)
-        data_list_tri = temp[:temp1]
-        data_list_val = temp[temp1:temp2]
-        data_list_test = temp[temp2:]
-        #
-        data_list_tri = [path_tri + "/" + dirname for dirname in data_list_tri]
-        data_list_val = [path_val + "/" + dirname for dirname in data_list_val]
-        data_list_test = [path_test + "/" + dirname for dirname in data_list_test]
-        #
+        data_len = len(data)
+        temp1 = int(data_len * 0.7)
+        temp2 = int(data_len * 0.9)
+        data_list_tri = data_all[:temp1]
+        data_list_val = data_all[temp1:temp2]
+        data_list_test = data_all[temp2:]
         return data_list_tri, data_list_val, data_list_test
+
+    def __getitem__(self, index):
+        paths, _, path_gt = self.data_list[index]
+        path_img_t0, path_img_t1 = paths
+        img_t0 = cv2.imread(path_img_t0, cv2.IMREAD_COLOR)
+        img_t1 = cv2.imread(path_img_t1, cv2.IMREAD_COLOR)
+        gt_optflo = readFlow(path_gt)
+        return img_t0, img_t1, gt_optflo
+
+if __name__=="__main__":
+    from mypath import Path
+    Dataset_generater = Dataset_FlyingChairs(Path.db_root_dir('flyingchairs'))
+    Dataset_train = Dataset_generater.generate('train')
+    Dataset_valid = Dataset_generater.generate('valid')
+    Dataset_test = Dataset_generater.generate('test')
+    img_t0, img_t1, gt = Dataset_train[0]
+    print(img_t0.shape)
+    print(img_t1.shape)
+    print(gt.shape)
+
+    import numpy as np
+    cv2.imwrite('1.png', img_t0)
+    cv2.imwrite('2.png', img_t1)
+    cv2.imwrite('3.png',  (cv2.merge([ np.zeros_like(gt[:,:,1]), gt[:,:,0], gt[:,:,1] ]) + 100).astype(np.uint8))  #bgr是0wh 时，rgb是hw0 [0通道是w，1通道是h,右下为正]

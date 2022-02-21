@@ -1,41 +1,64 @@
 import os
-from data.dataset.datatools._base_dataset_generater import _Dataset_Generater_Base
 
+import numpy as np
+from _base_dataset_generater import _Dataset_Generater_Base
+from _tools import sintel_tools as tools
+
+import cv2
+from _Chairsio import readFlow
 class Dataset_Sintel(_Dataset_Generater_Base):
-    def __init__(self, dataset_path=['data/ChairsSDHom/data/train','data/ChairsSDHom/data/test'],args=None) -> None:
+    def __init__(self, dataset_path='',args={}) -> None:
         print('initializating Dataset_Sintel...')
         super().__init__(dataset_path, args)
         
-    def get_alldata_from_dataset_path(self, dataset_path):
-        path_tri, path_val, path_test = dataset_path
-        temp = []
-        for video in os.listdir(path_tri):  # video: 'alley_1'
-            frames = sorted(os.listdir(path_tri + '/' + video))
-            for idx in range(len(frames)-1):
-                img_1_2 = (f'{video}/{frames[idx]}', f'{video}/{frames[idx+1]}')
-                temp.append(img_1_2) #
-        temp1 = int(len(temp) * 0.8)
-        data_list_tri = temp[:temp1]
-        data_list_val = temp[temp1:]
-        data_list_test = []
-        for video in os.listdir(path_test):  # video: 'alley_1'
-            frames = sorted(os.listdir(path_test + '/' + video))
-            for idx in range(len(frames)-1):
-                img_1_2 = (f'{video}/{frames[idx]}', f'{video}/{frames[idx+1]}')
-                data_list_test.append(img_1_2) #
+    def get_alldata_from_dataset_path(self):
+
+        data, data_piece = tools.getall_data_train(self.dataset_path)
+        label, _ = tools.getall_label_train(self.dataset_path)
+        data_all = []
+        for idx in range(len(data)-1):
+            if data_piece[idx] != data_piece[idx+1]:
+                continue
+            data_all.append(
+                (
+                    (data[idx], data[idx+1]),
+                    data_piece[idx],
+                    label[idx]
+                )
+            )
         #
-        data_list_tri = [(path_tri + "/" + dirname[0], path_tri + "/" + dirname[1]) for dirname in data_list_tri]
-        data_list_val = [(path_val + "/" + dirname[0], path_val + "/" + dirname[1]) for dirname in data_list_val]
-        data_list_test = [(path_test + "/" + dirname[0], path_test + "/" + dirname[1]) for dirname in data_list_test]
+        data_len = len(data_all)
+        temp1 = int(data_len * 0.7)
+        temp2 = int(data_len * 0.9)
+        data_list_tri = data_all[:temp1]
+        data_list_val = data_all[temp1:temp2]
+        data_list_test = data_all[temp2:]
+
         return data_list_tri, data_list_val, data_list_test
+
+    def __getitem__(self, index):
+        paths, _, path_gt = self.data_list[index]
+        path_img_t0, path_img_t1 = paths
+        img_t0 = cv2.imread(path_img_t0, cv2.IMREAD_COLOR)
+        img_t1 = cv2.imread(path_img_t1, cv2.IMREAD_COLOR)
+        gt_optflo = readFlow(path_gt)
+        return img_t0, img_t1, gt_optflo
+
+
+if __name__=="__main__":
+    from mypath import Path
+    Dataset_generater = Dataset_Sintel(Path.db_root_dir('sintel'))
+    Dataset_train = Dataset_generater.generate('train')
+    Dataset_valid = Dataset_generater.generate('valid')
+    Dataset_test = Dataset_generater.generate('test')
+    img_t0, img_t1, gt = Dataset_train[0]
+    print(img_t0.shape)
+    print(img_t1.shape)
+    print(gt.shape)
+
     
-    def load_flow(path):
-        import numpy as np
-        with open(path, 'rb') as f:
-            magic = np.fromfile(f, np.float32, count=1)
-            assert (202021.25 == magic), 'Magic number incorrect. Invalid .flo file'
-            h = np.fromfile(f, np.int32, count=1)[0]
-            w = np.fromfile(f, np.int32, count=1)[0]
-            data = np.fromfile(f, np.float32, count=2 * w * h)
-        data2D = np.resize(data, (w, h, 2))
-        return data2D
+    cv2.imwrite('1.png', img_t0)
+    cv2.imwrite('2.png', img_t1)
+    cv2.imwrite('3.png',  (cv2.merge([ np.zeros_like(gt[:,:,1]), gt[:,:,0], gt[:,:,1] ]) + 100).astype(np.uint8))  #bgr是0wh 时，rgb是hw0 [0通道是w，1通道是h,右下为正]
+    print(gt)
+    print(gt)

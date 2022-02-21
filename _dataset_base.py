@@ -3,7 +3,7 @@ from _base_dataset_generater import _Dataset_Generater_Base
 from _tools.janus_uav_tools import aaaaa as tools
 
 class Dataset_aaaaaa(_Dataset_Generater_Base):
-    def __init__(self, dataset_path='',args=None) -> None:
+    def __init__(self, dataset_path='',args={}) -> None:
         print('initializating 【】【】...')
         super().__init__(dataset_path, args)
         #

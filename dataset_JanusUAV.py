@@ -1,9 +1,9 @@
 import os
-from data.dataset.datatools._base_dataset_generater import _Dataset_Generater_Base
-from _tools.janus_uav_tools import janus_uav_tools as tools
+from _base_dataset_generater import _Dataset_Generater_Base
+from _tools import janus_uav_tools as tools
 
 class Dataset_JanusUAV(_Dataset_Generater_Base):
-    def __init__(self, dataset_path='data/FlyingChaire_release/data',args=None) -> None:
+    def __init__(self, dataset_path='',args={}) -> None:
         print('initializating Dataset_JanusUAV...')
         super().__init__(dataset_path, args)
         #
@@ -25,3 +25,14 @@ class Dataset_JanusUAV(_Dataset_Generater_Base):
         #
         return data_list_tri, data_list_val, data_list_test
         
+    def __getitem__(self, index):
+        return super().__getitem__(index)
+        
+
+if __name__=="__main__":
+    from mypath import Path
+    Dataset_generater = Dataset_JanusUAV(Path.db_root_dir('janus_uav'))
+    Dataset_train = Dataset_generater.generate('train')
+    Dataset_valid = Dataset_generater.generate('valid')
+    Dataset_test = Dataset_generater.generate('test')
+    Dataset_train[0]

@@ -1,10 +1,10 @@
 import os
 from _base_dataset_generater import _Dataset_Generater_Base
-from _tools.janus_uav_tools import aaaaa as tools
+from _tools import uav123_10fps_tools as tools
 
-class Dataset_aaaaaa(_Dataset_Generater_Base):
-    def __init__(self, dataset_path='',args=None) -> None:
-        print('initializating 【】【】...')
+class Dataset_UAV123FPS10(_Dataset_Generater_Base):
+    def __init__(self, dataset_path='',args={}) -> None:
+        print('initializating Dataset_UAV123FPS10...')
         super().__init__(dataset_path, args)
         #
     
@@ -28,3 +28,14 @@ class Dataset_aaaaaa(_Dataset_Generater_Base):
         #
         return data_list_tri, data_list_val, data_list_test
         
+    def __getitem__(self, index):
+        return super().__getitem__(index)
+        
+
+if __name__=="__main__":
+    from mypath import Path
+    Dataset_generater = Dataset_UAV123FPS10(Path.db_root_dir('uav123_10fps'))
+    Dataset_train = Dataset_generater.generate('train')
+    Dataset_valid = Dataset_generater.generate('valid')
+    Dataset_test = Dataset_generater.generate('test')
+    Dataset_train[0]

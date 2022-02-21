@@ -10,7 +10,7 @@ def getall_data_train(datasetpath:str):
                             os.path.join(path_tri, str(idx).zfill(5)+'_img2.ppm')
                         )
                     )
-        metadata = None
+        metadata.append(None)
     return data, metadata
 
 def getall_label_train(datasetpath:str):
@@ -20,7 +20,7 @@ def getall_label_train(datasetpath:str):
         data.append(
                         os.path.join(path_tri, str(idx).zfill(5)+'_flow.flo'),
                     )
-        metadata = None
+        metadata.append(None)
     return data, metadata
 
 def getall_data_valid(datasetpath:str):

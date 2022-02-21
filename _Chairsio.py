@@ -93,6 +93,9 @@ def writePFM(file, image, scale=1):
     image.tofile(file)
 
 def readFlow(name):
+    '''
+    [0通道是w，1通道是h,右下为正]
+    '''
     if name.endswith('.pfm') or name.endswith('.PFM'):
         return readPFM(name)[0][:,:,0:2]
 

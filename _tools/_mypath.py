@@ -26,7 +26,7 @@ class Path(object):
         elif dataset == 'okutama_action':
             raise NotImplementedError("这个数据集不行")
             return os.path.join(mypath, path_fg_det, 'Okutama-Action_Dataset')
-        elif dataset == 'uav123_10fps':
+        elif dataset == 'uav123fps10':
             return os.path.join(mypath, path_fg_det, 'UAV123_10fps')
         elif dataset == 'kitti_mod':
             return os.path.join(mypath, path_fg_det, 'KITTI_MOD_fixed')
@@ -55,7 +55,7 @@ class Path(object):
 
 if __name__ == "__main__":
     for datasetname in ['coco',
-                        'au_air','cdnet2014','davis2017','janus_uav','uav123_10fps','kitti_mod','pesmod',
+                        'au_air','cdnet2014','davis2017','janus_uav','uav123fps10 ','kitti_mod','pesmod',
                         'chairsd','flyingchairs','sintel']:
         temp = Path.db_root_dir(datasetname)
         assert(os.listdir(temp) != [])

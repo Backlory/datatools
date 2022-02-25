@@ -68,8 +68,10 @@ class _Dataset_Generater_Base(Dataset):
             children.data_list = children.data_tri
         elif state == 'valid':
             children.data_list = children.data_val
+            children.args['dataaugment'] = False
         elif state == 'test':
             children.data_list = children.data_test
+            children.args['dataaugment'] = False
         children._temp_list_clean()
         temp = f'dataset_{state} has been generated with id={id(children)}.'
         print(colorstr(temp,'yellow'))

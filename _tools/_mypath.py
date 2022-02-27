@@ -1,10 +1,13 @@
-import os
+import os, sys
 
 class Path(object):
     @staticmethod
     def db_root_dir(dataset):
         dataset = dataset.lower()
-        mypath = "/media/newdisk/home2/liyaning2/Desktop/dataset/"
+        if sys.platform == 'linux':
+            mypath = "/media/newdisk/home2/liyaning2/Desktop/dataset/"
+        elif sys.platform == "win32":
+            mypath = "E://dataset/"
         path_largeimg = 'dataset-large-img'
         path_fg_det = 'dataset-fg-det'
         path_optical = 'dataset-opticalflow'

@@ -12,7 +12,7 @@ from _tools import flyingchairs_tools as tools
 from _Chairsio import readFlow
 
 class Dataset_FlyingChairs(_Dataset_Generater_Base):
-    def __init__(self, dataset_path='',args={'dataaugment':True, 'img_size_h':512, 'img_size_w':512}) -> None:
+    def __init__(self, dataset_path='',args={'dataaugment':True, 'img_size_h':640, 'img_size_w':640}) -> None:
         print('initializating Dataset_FlyingChairs...')
         super().__init__(dataset_path, args)
         #

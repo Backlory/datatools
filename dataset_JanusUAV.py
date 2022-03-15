@@ -20,10 +20,16 @@ class Dataset_JanusUAV(_Dataset_Generater_Base):
         #
         data, data_piece = tools.getall_data_train(self.dataset_path)
         label, _ = tools.getall_label_train(self.dataset_path)
+        data =list( zip(data[0:-1], data[1:]) )
+        data_piece = list( zip(data_piece[0:-1], data_piece[1:]) )
+        label = label[:-1]
         tri = list(zip(data, data_piece, label ))
 
         data, data_piece = tools.getall_data_valid(self.dataset_path)
         label, _ = tools.getall_label_valid(self.dataset_path)
+        data =list( zip(data[0:-1], data[1:]) )
+        data_piece = list( zip(data_piece[0:-1], data_piece[1:]) )
+        label = label[:-1]
         tes = list(zip(data, data_piece, label ))
         
         split_ = int(len(tri) * 0.7)
@@ -39,13 +45,16 @@ class Dataset_JanusUAV(_Dataset_Generater_Base):
                 index = 0
         except:
             pass
-        if index > len(self.data_list) - 2:
-            index = len(self.datalist) - 2
-        if self.data_list[index][1] != self.data_list[index+1][1]:
-            index += 1
-        path_img_t0 = self.data_list[index][0]
-        path_img_t1 = self.data_list[index+1][0]
-        path_gt = self.data_list[index][2]
+        
+        paths, video_pieces, path_gt = self.data_list[index]
+        while video_pieces[0] != video_pieces[1]:
+            if index>10:
+                index -= 1
+            else:
+                index = 20
+            paths, video_pieces, path_gt = self.data_list[index]
+        path_img_t0, path_img_t1 = paths
+        
         img_t0 = cv2.imread(path_img_t0, cv2.IMREAD_COLOR)
         img_t1 = cv2.imread(path_img_t1, cv2.IMREAD_COLOR)
         gt = cv2.imread(path_gt, cv2.IMREAD_GRAYSCALE)[None]
@@ -55,10 +64,6 @@ class Dataset_JanusUAV(_Dataset_Generater_Base):
         img_t0 = torch.tensor(img_t0/255).float().permute(2,0,1)    #hwc->chw
         img_t1 = torch.tensor(img_t1/255).float().permute(2,0,1)
         target = torch.tensor(target/255).float()
-        print(img_t0.shape)
-        print(img_t1.shape)
-        print(target.shape)
-        print(target.max())
         if self.args['dataaugment']:
             img_t0, img_t1, target = self.transform(img_t0, img_t1, target)
         #

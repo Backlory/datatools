@@ -7,7 +7,7 @@ class Path(object):
         if sys.platform == 'linux':
             mypath = "/media/newdisk/home2/liyaning2/Desktop/dataset/"
         elif sys.platform == "win32":
-            mypath = "E://dataset/"
+            mypath = "E:\\dataset\\"
         path_largeimg = 'dataset-large-img'
         path_fg_det = 'dataset-fg-det'
         path_optical = 'dataset-opticalflow'

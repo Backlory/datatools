@@ -41,7 +41,6 @@ class _Dataset_Generater_Base(Dataset):
         random.shuffle(self.data_test)
         self.data_list = []
     
-    @abstractmethod
     def get_alldata_from_dataset_path(self):
         '''
         从dataset_path中读取出 trainset validset testset。这里要做的：
@@ -68,10 +67,10 @@ class _Dataset_Generater_Base(Dataset):
             children.data_list = children.data_tri
         elif state == 'valid':
             children.data_list = children.data_val
-            children.args['dataaugment'] = False
+            children.args['ifDataAugment'] = False
         elif state == 'test':
             children.data_list = children.data_test
-            children.args['dataaugment'] = False
+            children.args['ifDataAugment'] = False
         children._temp_list_clean()
         temp = f'dataset_{state} has been generated with id={id(children)}.'
         print(colorstr(temp,'yellow'))
@@ -83,11 +82,11 @@ class _Dataset_Generater_Base(Dataset):
 
     #
     def __len__(self):
-        if 'trick_dataset_len' not in self.args.keys():
+        if 'datasetLenTrick' not in self.args.keys():
             return len(self.data_list)
         else:
-            if self.args['trick_dataset_len'] > 0:
-                return self.args['trick_dataset_len']
+            if self.args['datasetLenTrick'] > 0:
+                return self.args['datasetLenTrick']
             else:
                 return len(self.data_list)
         

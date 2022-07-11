@@ -55,10 +55,6 @@ class Dataset_JanusUAV(_Dataset_Generater_Base):
         img_t0 = torch.tensor(img_t0/255).float().permute(2,0,1)    #hwc->chw
         img_t1 = torch.tensor(img_t1/255).float().permute(2,0,1)
         target = torch.tensor(target/255).float()
-        print(img_t0.shape)
-        print(img_t1.shape)
-        print(target.shape)
-        print(target.max())
         if self.args['dataaugment']:
             img_t0, img_t1, target = self.transform(img_t0, img_t1, target)
         #
